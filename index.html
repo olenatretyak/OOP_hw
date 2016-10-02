@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OOP homework</title>
+</head>
+<body>
+  
+  <script type="text/javascript">
+    function Casino(numberOfSlotMachines, moneySum) {
+      this.slotMachines = [];
+      var luckySlot = Math.floor(Math.random() * (numberOfSlotMachines - 1)) + 1;
+      var avrSum = moneySum/numberOfSlotMachines;
+
+      for (var i = 1; i <= numberOfSlotMachines; i++) {
+        var lucky = i == luckySlot;
+        this.slotMachines.push(new SlotMachine(avrSum, lucky));
+      }
+
+      this.overallSum = function() {
+        return this.slotMachines.reduce(function(sum, slotMachine) {
+          return sum + slotMachine.moneySum;
+        });
+      }
+
+      this.overallSlots = function() {
+        return this.slotMachines.length;
+      }
+
+      this.addSlot = function() {
+        var moneySums = this.slotMachines.map(function(machine) {
+          return machine.moneySum;
+        });
+
+        var wealthiestMachineIndex = moneySums.indexOf(Math.max(...moneySums));
+
+        var wealthiestMachine = this.slotMachines[wealthiestMachineIndex];
+        var maxSum = wealthiestMachine.moneySum;
+        wealthiestMachine.moneySum = maxSum/2;
+
+        this.slotMachines.push(new SlotMachine(maxSum/2, false))
+      }
+
+      this.deleteSlot = function(number) {
+        var moneySum = this.slotMachines[number].moneySum;
+        var curMoneySum = moneySum/this.overallSlots();
+
+        this.slotMachines.splice(number, 1);
+
+        for(var i = 0; i < this.overallSlots(); i++) {
+          this.slotMachines[i].moneySum += curMoneySum;
+        }
+      };
+
+      this.withdrawSum = function(number) {
+
+      }
+
+    };
+
+    function SlotMachine(moneySum, lucky) {
+      this.moneySum = moneySum;
+      this.lucky = lucky;
+    };
+
+    var casino = new Casino(7, 100);
+    console.log(casino);
+    console.log('overall sum of money', casino.overallSum());
+    console.log('overall number of SlotMachines', casino.overallSlots());
+    casino.addSlot();
+    console.log('overall number of SlotMachines after we added new slotMachine', casino.overallSlots());
+    casino.deleteSlot(3);
+    console.log('overall number of SlotMachines after we deleted one slotMachine', casino.overallSlots());
+
+
+  </script>
+
+</body>
+</html>
