@@ -19,7 +19,7 @@
       this.overallSum = function() {
         return this.slotMachines.reduce(function(sum, slotMachine) {
           return sum + slotMachine.moneySum;
-        });
+        }, 0);
       }
 
       this.overallSlots = function() {
@@ -52,9 +52,31 @@
       };
 
       this.withdrawSum = function(number) {
+        if(this.overallSum() >= number) {
+          var slotMachinesSorted = this.slotMachines.sort(function(a, b) {
+            if (a.moneySum < b.moneySum) {
+              return 1;
+            }
+            if (a.moneySum > b.moneySum) {
+              return -1;
+            }
+            return 0;
+          });
 
+          for(var i = 0; i < slotMachinesSorted.length; i++) {
+            if (slotMachinesSorted[i].moneySum > number) {
+              slotMachinesSorted[i].moneySum -= number;
+              break;
+            } else {
+              number -= slotMachinesSorted[i].moneySum;
+              slotMachinesSorted[i].moneySum = 0;
+            }
+          }
+          this.slotMachines = slotMachinesSorted;
+        } else {
+          console.log("Casino doesn't have required sum");
+        }
       }
-
     };
 
     function SlotMachine(moneySum, lucky) {
@@ -70,6 +92,9 @@
     console.log('overall number of SlotMachines after we added new slotMachine', casino.overallSlots());
     casino.deleteSlot(3);
     console.log('overall number of SlotMachines after we deleted one slotMachine', casino.overallSlots());
+    casino.withdrawSum(17);
+    console.log('sum of money on first and second SlotMachines after we withdrawn 17$',casino.slotMachines[1].moneySum, casino.slotMachines[2].moneySum);
+    
 
 
   </script>
