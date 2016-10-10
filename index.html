@@ -82,6 +82,22 @@
     function SlotMachine(moneySum, lucky) {
       this.moneySum = moneySum;
       this.lucky = lucky;
+
+      this.overallSum = function(){
+        return this.moneySum;
+      }
+
+      this.withdrawSum = function(number) {
+        if (this.moneySum >= number) {
+          this.moneySum -= number;
+        } else {
+          console.log("This SlotMachine doesn't have required sum");
+        }
+      }
+
+      this.newMoney = function(number) {
+        this.moneySum = this.moneySum + number;
+      }
     };
 
     var casino = new Casino(7, 100);
@@ -94,6 +110,14 @@
     console.log('overall number of SlotMachines after we deleted one slotMachine', casino.overallSlots());
     casino.withdrawSum(17);
     console.log('sum of money on first and second SlotMachines after we withdrawn 17$',casino.slotMachines[1].moneySum, casino.slotMachines[2].moneySum);
+
+    var slotMachine = new SlotMachine(15, 3);
+    console.log(slotMachine);
+    console.log(slotMachine.overallSum());
+    slotMachine.withdrawSum(4);
+    console.log(slotMachine.moneySum);
+    slotMachine.newMoney(20);
+    console.log(slotMachine.moneySum);
     
 
 
