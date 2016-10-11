@@ -41,14 +41,19 @@
       }
 
       this.deleteSlot = function(number) {
-        var moneySum = this.slotMachines[number].moneySum;
-        var curMoneySum = moneySum/this.overallSlots();
 
-        this.slotMachines.splice(number, 1);
+        if (number <= this.slotMachines.length) {
+           var moneySum = this.slotMachines[number].moneySum;
+          var curMoneySum = moneySum/this.overallSlots();
 
-        for(var i = 0; i < this.overallSlots(); i++) {
-          this.slotMachines[i].moneySum += curMoneySum;
-        }
+          this.slotMachines.splice(number, 1);
+
+          for(var i = 0; i < this.overallSlots(); i++) {
+            this.slotMachines[i].moneySum += curMoneySum;
+          }
+        } else {
+          console.log("The SlotMachine N " + number + " doesn't exist")
+        } 
       };
 
       this.withdrawSum = function(number) {
@@ -98,6 +103,36 @@
       this.newMoney = function(number) {
         this.moneySum = this.moneySum + number;
       }
+
+      this.playGame = function(number) { 
+        this.moneySum += number;
+
+        if (this.lucky) {
+          var luckyNumber = 777;
+        } else {
+          var luckyNumber = Math.floor(Math.random() * (999 - 111)) + 111; 
+        }
+       
+        var digits = luckyNumber.toString().split('');
+        if (luckyNumber == 777) {
+          var win = this.moneySum;
+        } else if (digits[0] == digits[1] || digits[1] == digits[2] || digits[2] == digits[0]) {
+          var win = number * 2;
+        } else if (digits[0] == digits[1] && digits[1] == digits[2]) {
+          var win = number * 5;
+        } else {
+          console.log('You loosed...');
+          var win = 0;
+        }
+
+        if (win > this.moneySum) {
+          win = this.moneySum;
+        } 
+
+        this.moneySum -= win;
+
+        return win;
+      }
     };
 
     var casino = new Casino(7, 100);
@@ -111,13 +146,14 @@
     casino.withdrawSum(17);
     console.log('sum of money on first and second SlotMachines after we withdrawn 17$',casino.slotMachines[1].moneySum, casino.slotMachines[2].moneySum);
 
-    var slotMachine = new SlotMachine(15, 3);
+    var slotMachine = new SlotMachine(15, false);
     console.log(slotMachine);
-    console.log(slotMachine.overallSum());
+    console.log('overall sum of money', slotMachine.overallSum());
     slotMachine.withdrawSum(4);
-    console.log(slotMachine.moneySum);
+    console.log('sum of money on SlotMachine after we withdrawn 4$', slotMachine.moneySum);
     slotMachine.newMoney(20);
-    console.log(slotMachine.moneySum);
+    console.log('sum of money on SlotMachine after we added 20$', slotMachine.moneySum);
+    console.log('sum, that we won', slotMachine.playGame(35));
     
 
 
